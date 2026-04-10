@@ -4,3 +4,5 @@
 # But not these files...
 !.gitignore
 !0.json
+!01.json
+!songs.json
