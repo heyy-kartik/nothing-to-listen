@@ -4,35 +4,35 @@ import { useMediaQuery } from '../../../../../hooks/use-media-query'
 import { store } from '../../../../../store'
 import { down, orientation } from '../../../../../utils/mq'
 import { cn } from '../../../../../utils/tw'
-import type { Film } from '../../../../../vf'
+import type { Song } from '../../../../../vf'
 import { AnimateDimensionsChange } from '../../../../common/animate-dimensions-change'
 import { Badge } from '../../../../ui/badge'
-import { FilmRatingGauge } from '../../shared/film-rating-gauge'
+import { SongRatingGauge } from '../../shared/song-rating-gauge'
 
-export const FilmView = ({
-  film,
+export const SongView = ({
+  song,
   className = '',
-}: { film?: Film; className?: string }) => {
+}: { song?: Song; className?: string }) => {
   const isSmallScreen = useMediaQuery(down('md'))
   const isLandscape = useMediaQuery(orientation('landscape'))
   const [viewHovered, setViewHovered] = useState(false)
 
-  const filmRef = useRef<Film>(undefined)
+  const songRef = useRef<Song>(undefined)
   const ua = store((state) => state.ua)
 
   const [backdropHidden, setBackdropHidden] = useState(true)
   const [backdropErrored, setBackdropErrored] = useState(true)
 
   useEffect(() => {
-    if (filmRef.current?.tmdbId !== film?.tmdbId) {
+    if (songRef.current?.tmdbId !== song?.tmdbId) {
       setBackdropHidden(true)
     }
-    filmRef.current = film
-  }, [film])
+    songRef.current = song
+  }, [song])
 
   const isIOS = useMemo(() => ua.getOS()?.name === 'iOS', [ua])
 
-  if (!film) return
+  if (!song) return
 
   return (
     <AnimateDimensionsChange
@@ -67,7 +67,7 @@ export const FilmView = ({
                 },
               )}
               alt=''
-              src={`${config.backdropBaseUrl}${film.backdrop}`}
+              src={`${song.imageUrl}`}
               onLoad={() => {
                 setBackdropHidden(false)
                 setBackdropErrored(false)
@@ -91,15 +91,15 @@ export const FilmView = ({
                 <div className='flex w-full flex-col gap-3'>
                   <div className='relative flex w-full flex-row items-start justify-between gap-3 pr-16 md:pr-28'>
                     <h3 className='font-black text-2xl leading-none md:text-3xl lg:text-4xl xl:text-5xl'>
-                      {film.title}
-                      {film.year && (
+                      {song.title}
+                      {song.duration && (
                         <span className='font-medium text-foreground/50'>
-                          &nbsp;({film.year})
+                          &nbsp;({song.duration})
                         </span>
                       )}
                     </h3>
                     <div className='absolute top-0 right-0 flex flex-row-reverse items-center gap-3'>
-                      <FilmRatingGauge value={film.rating} />
+                      <SongRatingGauge value={song.playcount || 0} />
                       <div className='hidden text-xxs leading-none md:not-landscape:block lg:hidden xl:block'>
                         TMDB <br />
                         Score
@@ -108,10 +108,10 @@ export const FilmView = ({
                   </div>
                   <div className='flex flex-col gap-3'>
                     <p className='line-clamp-2 text-base text-foreground/80 italic leading-none md:line-clamp-1 lg:text-xl'>
-                      {film.tagline}
+                      {song.artist}
                     </p>
                     <div className='flex flex-row gap-3 pt-2'>
-                      {film.genres?.map((genre) => (
+                      {song.listeners ? ["Listeners: " + song.listeners] : undefined?.map((genre) => (
                         <Badge
                           className='whitespace-nowrap text-[0.6rem] leading-none md:text-xs'
                           key={genre}
@@ -128,7 +128,7 @@ export const FilmView = ({
           <div className='full mb-15 px-4 pb-6 md:px-6 lg:px-6 lg:pb-6 xl:px-9 xl:pb-9'>
             <div className='flex flex-col justify-end text-base leading-tight max-md:text-sm max-lg:h-[calc(4em*1.25)] group-hover:md:h-auto group-hover:md:min-h-[calc(4em*1.25)] lg:h-[calc(4em*1.25)] lg:text-xl group-hover:lg:h-auto'>
               <p className='max-lg:line-clamp-4 group-hover:max-lg:line-clamp-none group-hover:md:max-lg:line-clamp-4 lg:line-clamp-4 group-hover:lg:line-clamp-none'>
-                {film.overview}
+                {}
               </p>
             </div>
           </div>

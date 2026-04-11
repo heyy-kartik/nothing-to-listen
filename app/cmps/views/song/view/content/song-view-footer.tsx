@@ -2,7 +2,7 @@ import { HeartOff, HeartPlus, Plus } from 'lucide-react'
 import type { DialogProps } from 'vaul'
 import { useShallowState } from '../../../../../store'
 import { cn } from '../../../../../utils/tw'
-import type { Film, VoroforceCell } from '../../../../../vf'
+import type { Song, VoroforceCell } from '../../../../../vf'
 import { CustomLinks } from '../../../../common/custom-links'
 import { StdLinks } from '../../../../common/standard-links'
 import { Button } from '../../../../ui/button'
@@ -13,14 +13,14 @@ import {
   TooltipTrigger,
 } from '../../../../ui/tooltip'
 
-export const FilmViewFooter = ({
-  film,
+export const SongViewFooter = ({
+  song,
   voroforceCell,
   className = '',
   handleClose,
   direction,
 }: {
-  film?: Film
+  song?: Song
   voroforceCell?: VoroforceCell
   className?: string
   handleClose?: () => void
@@ -30,11 +30,11 @@ export const FilmViewFooter = ({
     useShallowState((state) => ({
       userConfig: state.userConfig,
       setUserConfig: state.setUserConfig,
-      isFavorite: film && state.userConfig?.favorites?.[film.tmdbId],
+      isFavorite: song && state.userConfig?.favorites?.[song.id],
       setAddCustomLinkTypeOpen: state.setAddCustomLinkTypeOpen,
     }))
 
-  if (!film) return
+  if (!song) return
   return (
     <div
       className={cn(
@@ -44,8 +44,8 @@ export const FilmViewFooter = ({
       )}
     >
       <div className={cn('pointer-events-auto flex flex-row gap-3')}>
-        <StdLinks film={film} />
-        <CustomLinks film={film} />
+        <StdLinks song={song} />
+        <CustomLinks song={song} />
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -76,17 +76,17 @@ export const FilmViewFooter = ({
                 variant={isFavorite ? 'default' : 'outline'}
                 onClick={() => {
                   if (isFavorite) {
-                    delete userConfig.favorites?.[film.tmdbId]
+                    delete userConfig.favorites?.[song.id]
                   } else {
                     if (!userConfig.favorites) userConfig.favorites = {}
-                    userConfig.favorites[film.tmdbId] = {
+                    userConfig.favorites[song.id] = {
                       cellId: voroforceCell?.id,
-                      imdbId: film.imdbId,
-                      tmdbId: film.tmdbId,
-                      title: film.title,
-                      tagline: film.tagline,
-                      year: film.year,
-                      poster: film.poster,
+                      undefined: undefined,
+                      id: song.id,
+                      title: song.title,
+                      tagline: song.artist,
+                      year: song.duration,
+                      poster: song.imageUrl,
                     }
                   }
                   setUserConfig(userConfig)
