@@ -1,4 +1,4 @@
-# There's nothing to watch...
+# There's nothing to listen...
 
 The silver screen's heyday is arguably behind us. Luckily, we have
 over a hundred years of cinema to fall back on.
@@ -34,7 +34,7 @@ An experimental WebGL gallery that visualizes tens of thousands of film posters 
 1. **Clone the repository**
    ```bash
    git clone git@github.com:gnovotny/nothing-to-watch.git
-   cd nothing-to-watch
+   cd nothing-to-listen
    ```
 
 2. **Set up environment variables**

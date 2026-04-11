@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "nothing-to-watch",
+      "name": "nothing-to-listen",
       "dependencies": {
         "@hookform/resolvers": "^5.2.0",
         "@micro-sentry/browser": "^7.1.1",
