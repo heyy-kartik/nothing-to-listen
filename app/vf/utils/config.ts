@@ -10,14 +10,14 @@ import {
   VOROFORCE_PRESET,
 } from '../consts'
 import type { VoroforceCell, VoroforceInstance } from '../types'
-import type { Film } from './films'
+import type { Song } from './songs'
 import type { ConfigUniform } from './uniforms'
 
 export type CustomLink = {
   name: string
   baseUrl: string
   slug: boolean
-  property: 'title' | 'tmdbId' | 'imdbId'
+  property: 'title' | 'artist' | 'mbid'
 }
 
 export type UserConfig = {
@@ -25,14 +25,15 @@ export type UserConfig = {
   devTools?: boolean
   customLinks?: CustomLink[]
   favorites?: {
-    [key: Film['tmdbId']]: {
+    [key: Song['id']]: {
       cellId: VoroforceCell['id']
-      title: Film['title']
-      year: Film['year']
-      tagline: Film['tagline']
-      tmdbId: Film['tmdbId']
-      imdbId?: Film['imdbId']
-      poster?: Film['poster']
+      title: Song['title']
+      artist: Song['artist']
+      album: Song['album']
+      genre: Song['genre']
+      id: Song['id']
+      imageUrl?: Song['imageUrl']
+      url?: Song['url']
     }
   }
 }

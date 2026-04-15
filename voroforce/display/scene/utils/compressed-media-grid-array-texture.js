@@ -2,28 +2,30 @@ import { Texture } from 'ogl'
 
 export class CompressedMediaGridArrayTexture extends Texture {
   constructor(gl, args) {
-    let ext
+    const format = args.compressionFormat
+    const isStandardImage = format === 'jpg' || format === 'jpeg' || format === 'png'
+
+    let ext = null
     let internalFormat
-    if (args.compressionFormat === 'etc') {
-      // ext = gl.getExtension('WEBGL_compressed_texture_etc1')
+
+    if (isStandardImage) {
+      // Standard image formats — no compressed texture extension needed
+      internalFormat = gl.RGBA8
+    } else if (format === 'etc') {
       ext = gl.getExtension('WEBGL_compressed_texture_etc')
       if (!ext) {
-        // Extension not supported
         console.error('ETC1 texture compression not supported')
       }
       internalFormat = ext.COMPRESSED_RGB_ETC1_WEBGL
-    } else if (args.compressionFormat === 'ktx') {
-      // ext = gl.getExtension('WEBGL_compressed_texture_etc1')
+    } else if (format === 'ktx') {
       ext = gl.getExtension('WEBGL_compressed_texture_etc')
       if (!ext) {
-        // Extension not supported
         console.error('ETC texture compression not supported')
       }
       internalFormat = ext.COMPRESSED_RGB8_ETC2
     } else {
       ext = gl.getExtension('WEBGL_compressed_texture_s3tc')
       if (!ext) {
-        // Extension not supported
         console.error('S3TC texture compression not supported')
       }
       internalFormat = ext.COMPRESSED_RGB_S3TC_DXT1_EXT
@@ -40,14 +42,11 @@ export class CompressedMediaGridArrayTexture extends Texture {
 
       wrapS: gl.CLAMP_TO_EDGE,
       wrapT: gl.CLAMP_TO_EDGE,
-
-      // If using mipmaps
-      // generateMipmaps: true, // For some compressed formats
-      // minFilter: gl.LINEAR_MIPMAP_LINEAR, // Trilinear filtering with mipmaps
     })
 
     this.compressedTexExt = ext
     this.internalFormat = internalFormat
+    this.isStandardImage = isStandardImage
 
     this.bind()
 
@@ -149,20 +148,36 @@ export class CompressedMediaGridArrayTexture extends Texture {
     }
 
     this.pendingLayerUpdates.forEach(({ index, bytes }) => {
-      this.gl.compressedTexSubImage3D(
-        this.gl.TEXTURE_2D_ARRAY,
-        0,
-        0,
-        0,
-        index,
-        this.width,
-        this.height,
-        1,
-        // media.internalFormat,
-        // this.compressedTexExt.COMPRESSED_RGB_S3TC_DXT1_EXT,
-        this.internalFormat,
-        bytes,
-      )
+      if (this.isStandardImage) {
+        // Standard image: bytes is an Image/HTMLImageElement
+        this.gl.texSubImage3D(
+          this.gl.TEXTURE_2D_ARRAY,
+          0,
+          0,
+          0,
+          index,
+          this.width,
+          this.height,
+          1,
+          this.gl.RGBA,
+          this.gl.UNSIGNED_BYTE,
+          bytes,
+        )
+      } else {
+        // Compressed format: bytes is a Uint8Array
+        this.gl.compressedTexSubImage3D(
+          this.gl.TEXTURE_2D_ARRAY,
+          0,
+          0,
+          0,
+          index,
+          this.width,
+          this.height,
+          1,
+          this.internalFormat,
+          bytes,
+        )
+      }
     })
 
     this.pendingLayerUpdates = []
@@ -175,3 +190,4 @@ export class CompressedMediaGridArrayTexture extends Texture {
     })
   }
 }
+

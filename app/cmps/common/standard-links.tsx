@@ -1,16 +1,15 @@
-import config from '../../config'
 import { cn } from '../../utils/tw'
-import type { Film } from '../../vf'
+import type { Song } from '../../vf'
 import { Button } from '../ui/button'
 
 export const StdLinks = ({
-  film,
+  song,
   buttonClassName = '',
 }: {
-  film: {
-    title: Film['title']
-    tmdbId: Film['tmdbId']
-    imdbId?: Film['imdbId']
+  song: {
+    title: Song['title']
+    artist?: Song['artist']
+    id: Song['id']
   }
   buttonClassName?: string
 }) => {
@@ -25,31 +24,13 @@ export const StdLinks = ({
         )}
       >
         <a
-          href={`${config.tmdbFilmBaseUrl}${film.tmdbId}`}
+          href={`https://last.fm/music/${encodeURIComponent(song.artist || '')}/_/${encodeURIComponent(song.title)}`}
           target='_blank'
           rel='noreferrer'
         >
-          TMDB
+          Last.fm
         </a>
       </Button>
-      {film.imdbId && (
-        <Button
-          asChild
-          variant='outline'
-          className={cn(
-            'rounded-lg border-foreground md:backdrop-blur-lg',
-            buttonClassName,
-          )}
-        >
-          <a
-            href={`${config.imdbFilmBaseUrl}${film.imdbId}`}
-            target='_blank'
-            rel='noreferrer'
-          >
-            IMDB
-          </a>
-        </Button>
-      )}
     </>
   )
 }

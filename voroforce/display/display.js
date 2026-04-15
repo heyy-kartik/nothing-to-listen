@@ -37,6 +37,10 @@ export default class Display {
     const media = this.globalConfig.media
     if (!media?.enabled) return
 
+    // Standard image formats don't need GPU compressed texture extensions
+    const standardFormats = ['jpg', 'jpeg', 'png']
+    if (standardFormats.includes(media.compressionFormat)) return
+
     const compressionFormats = {
       dds: 'WEBGL_compressed_texture_s3tc',
       ktx: 'WEBGL_compressed_texture_etc',
@@ -46,7 +50,7 @@ export default class Display {
 
     const index = compressionFormatKeys.indexOf(media.compressionFormat)
     if (index === -1) {
-      throw new Error('Media compression format must be either dds or ktx.')
+      throw new Error('Media compression format must be either dds, ktx, jpg, jpeg, or png.')
     }
 
     if (!this.gl.getExtension(compressionFormats[media.compressionFormat])) {

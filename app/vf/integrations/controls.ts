@@ -2,13 +2,13 @@ import { mergeConfigs } from '√'
 import { store } from '../../store'
 import { VOROFORCE_MODE } from '../consts'
 import type { VoroforceCell, VoroforceInstance } from '../types'
-import { getCellFilm } from '../utils'
+import { getCellSong } from '../utils'
 
 export const handleControls = () => {
   const {
-    setFilm,
+    setSong,
     voroforce,
-    filmBatches,
+    songBatches,
     configUniforms: {
       main: mainUniforms,
       transitioning: transitioningUniforms,
@@ -21,12 +21,12 @@ export const handleControls = () => {
   const { controls } = voroforce
 
   controls.listen('focused', (async ({ cell }: { cell: VoroforceCell }) => {
-    if (cell) setFilm(await getCellFilm(cell, filmBatches))
+    if (cell) setSong(await getCellSong(cell, songBatches))
   }) as unknown as EventListener)
 
   controls.listen('selected', (async ({ cell }: { cell: VoroforceCell }) => {
     if (cell) {
-      setFilm(await getCellFilm(cell, filmBatches))
+      setSong(await getCellSong(cell, songBatches))
       // controls.pinPointer()
     } else {
       // controls.unpinPointer()

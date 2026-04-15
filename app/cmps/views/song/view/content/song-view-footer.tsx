@@ -81,12 +81,13 @@ export const SongViewFooter = ({
                     if (!userConfig.favorites) userConfig.favorites = {}
                     userConfig.favorites[song.id] = {
                       cellId: voroforceCell?.id,
-                      undefined: undefined,
                       id: song.id,
                       title: song.title,
-                      tagline: song.artist,
-                      year: song.duration,
-                      poster: song.imageUrl,
+                      artist: song.artist,
+                      album: song.album,
+                      genre: song.genre,
+                      imageUrl: song.imageUrl,
+                      url: song.url,
                     }
                   }
                   setUserConfig(userConfig)

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import config from '../../../../../config'
 import { useMediaQuery } from '../../../../../hooks/use-media-query'
 import { store } from '../../../../../store'
 import { down, orientation } from '../../../../../utils/mq'
@@ -24,7 +23,7 @@ export const SongView = ({
   const [backdropErrored, setBackdropErrored] = useState(true)
 
   useEffect(() => {
-    if (songRef.current?.tmdbId !== song?.tmdbId) {
+    if (songRef.current?.id !== song?.id) {
       setBackdropHidden(true)
     }
     songRef.current = song
@@ -92,17 +91,12 @@ export const SongView = ({
                   <div className='relative flex w-full flex-row items-start justify-between gap-3 pr-16 md:pr-28'>
                     <h3 className='font-black text-2xl leading-none md:text-3xl lg:text-4xl xl:text-5xl'>
                       {song.title}
-                      {song.duration && (
-                        <span className='font-medium text-foreground/50'>
-                          &nbsp;({song.duration})
-                        </span>
-                      )}
                     </h3>
                     <div className='absolute top-0 right-0 flex flex-row-reverse items-center gap-3'>
                       <SongRatingGauge value={song.playcount || 0} />
                       <div className='hidden text-xxs leading-none md:not-landscape:block lg:hidden xl:block'>
-                        TMDB <br />
-                        Score
+                        Play <br />
+                        Count
                       </div>
                     </div>
                   </div>
@@ -110,26 +104,30 @@ export const SongView = ({
                     <p className='line-clamp-2 text-base text-foreground/80 italic leading-none md:line-clamp-1 lg:text-xl'>
                       {song.artist}
                     </p>
-                    <div className='flex flex-row gap-3 pt-2'>
-                      {song.listeners ? ["Listeners: " + song.listeners] : undefined?.map((genre) => (
+                    {song.album && (
+                      <p className='line-clamp-1 text-sm text-foreground/60 leading-none lg:text-base'>
+                        Album: {song.album}
+                      </p>
+                    )}
+                    <div className='flex flex-row flex-wrap gap-3 pt-2'>
+                      {song.genre && (
                         <Badge
                           className='whitespace-nowrap text-[0.6rem] leading-none md:text-xs'
-                          key={genre}
                         >
-                          {genre}
+                          {song.genre}
                         </Badge>
-                      ))}
+                      )}
+                      {song.listeners > 0 && (
+                        <Badge
+                          className='whitespace-nowrap text-[0.6rem] leading-none md:text-xs'
+                        >
+                          {song.listeners.toLocaleString()} listeners
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className='full mb-15 px-4 pb-6 md:px-6 lg:px-6 lg:pb-6 xl:px-9 xl:pb-9'>
-            <div className='flex flex-col justify-end text-base leading-tight max-md:text-sm max-lg:h-[calc(4em*1.25)] group-hover:md:h-auto group-hover:md:min-h-[calc(4em*1.25)] lg:h-[calc(4em*1.25)] lg:text-xl group-hover:lg:h-auto'>
-              <p className='max-lg:line-clamp-4 group-hover:max-lg:line-clamp-none group-hover:md:max-lg:line-clamp-4 lg:line-clamp-4 group-hover:lg:line-clamp-none'>
-                {}
-              </p>
             </div>
           </div>
         </div>

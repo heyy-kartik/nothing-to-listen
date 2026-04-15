@@ -36,7 +36,7 @@ export class Loader extends CustomEventTarget {
 
   preloadFirstMediaLayerAllGridVersions(onLoad) {
     const count = this.config.versions.filter(
-      ({ type }) => !type || type === 'compressed-grid',
+      ({ type }) => !type || type === 'compressed-grid' || type === 'uncompressed-grid',
     ).length
     let loaded = 0
     const onLoadLayer = () => {
@@ -48,7 +48,7 @@ export class Loader extends CustomEventTarget {
     }
     for (let i = 0; i < count; i++) {
       const type = this.config.versions[i].type
-      if (type && type !== 'compressed-grid') continue
+      if (type && type !== 'compressed-grid' && type !== 'uncompressed-grid') continue
       void this.loadMediaLayer(i, 0, onLoadLayer)
     }
   }
@@ -63,7 +63,10 @@ export class Loader extends CustomEventTarget {
     const baseUrl = this.config.baseUrl
     const config = this.config.versions[versionIndex]
     const ext =
-      !config.type || config.type === 'compressed-grid'
+      (!config.type || config.type === 'compressed-grid') &&
+      this.config.compressionFormat !== 'jpg' &&
+      this.config.compressionFormat !== 'jpeg' &&
+      this.config.compressionFormat !== 'png'
         ? this.config.compressionFormat
         : undefined
 
@@ -72,7 +75,7 @@ export class Loader extends CustomEventTarget {
       src = await config.layerSrcFormat(layerIndex, this.store)
     } else {
       src = `${config.layerSrcFormat.startsWith('/') ? baseUrl : ''}${config.layerSrcFormat
-        .replaceAll('{INDEX}', `${(config.layerIndexStart ?? 0) + layerIndex}`)
+        .replaceAll('{INDEX}', `${(config.layerIndexStart ?? 0) + layerIndex}`.padStart(6, '0'))
         .replaceAll('{EXT}', ext)}`
     }
 
@@ -83,6 +86,7 @@ export class Loader extends CustomEventTarget {
 
     let bytes
     const type = config.type ?? 'compressed-grid'
+    const isUncompressed = type === 'uncompressed-grid' || type === 'uncompressed-single'
 
     const isDds = ext === 'dds'
     const isKtx = ext === 'ktx'
@@ -191,7 +195,7 @@ export class Loader extends CustomEventTarget {
         versionIndex,
         layerIndex,
         type,
-        isCompressed: isDds,
+        isCompressed: isDds && !isUncompressed,
       }),
     )
 

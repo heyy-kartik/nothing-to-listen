@@ -26,8 +26,8 @@ import { Switch } from '../../../../ui/switch'
 
 enum Property {
   Title = 'title',
-  ImdbId = 'imdbId',
-  TmdbId = 'tmdbId',
+  Artist = 'artist',
+  Mbid = 'mbid',
 }
 
 const formSchema = v.object({
@@ -144,9 +144,9 @@ export function AddCustomLinkModal() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='title'>Movie Title</SelectItem>
-                      <SelectItem value='tmdbId'>TMDB ID</SelectItem>
-                      <SelectItem value='imdbId'>IMDB ID</SelectItem>
+                      <SelectItem value='title'>Song Title</SelectItem>
+                      <SelectItem value='artist'>Artist</SelectItem>
+                      <SelectItem value='mbid'>MusicBrainz ID</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormItem>

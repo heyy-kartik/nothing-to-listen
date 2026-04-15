@@ -287,7 +287,7 @@ export default class BaseScene {
 
   getCompressedMediaVersions() {
     const compressedMediaVersions = this.globalConfig.media.versions.filter(
-      ({ type }) => !type || type === 'compressed-grid',
+      ({ type }) => !type || type === 'compressed-grid' || type === 'uncompressed-grid',
     )
     compressedMediaVersions.length = 3 // todo hard limit
     return compressedMediaVersions
@@ -295,7 +295,7 @@ export default class BaseScene {
 
   getUnCompressedMediaVersions() {
     const uncompressedMediaVersions = this.globalConfig.media.versions.filter(
-      ({ type }) => type && type !== 'compressed-grid',
+      ({ type }) => type && type !== 'compressed-grid' && type !== 'uncompressed-grid',
     )
     uncompressedMediaVersions.length = 1 // todo hard limit
     return uncompressedMediaVersions
@@ -308,7 +308,7 @@ export default class BaseScene {
         () => emptyTex,
       )
       this.virtualMediaGridTextures = this.globalConfig.media.versions
-        .filter(({ type }) => type && type !== 'compressed-grid')
+        .filter(({ type }) => type && type !== 'compressed-grid' && type !== 'uncompressed-grid')
         .map(() => emptyTex)
 
       return
@@ -342,7 +342,7 @@ export default class BaseScene {
     this.loader.addEventListener(
       'mediaLayerLoaded',
       ({ data: { versionIndex, layerIndex, bytes, type } }) => {
-        if (!type || type === 'compressed-grid') {
+        if (!type || type === 'compressed-grid' || type === 'uncompressed-grid') {
           this.compressedMediaGridTextures[versionIndex].prepareLayerUpdate?.(
             layerIndex,
             bytes,

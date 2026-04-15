@@ -56,14 +56,9 @@ const items = [
         </p>
         <br />
         <p>
-          The dataset is made available under the{' '}
-          <Link href='http://opendatacommons.org/licenses/by/1.0/'>
-            Open Data Commons Attribution License
-          </Link>{' '}
-          and is sourced from{' '}
-          <Link href='https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies/data'>
-            Kaggle's TMDB Movies Dataset
-          </Link>
+          Song data is sourced from{' '}
+          <Link href='https://www.last.fm'>Last.fm</Link>{' '}
+          and album artwork is used for informational purposes only.
         </p>
         <br />
         <p>
@@ -81,22 +76,16 @@ const items = [
     content: (
       <>
         <p>
-          The silver screen's heyday is arguably behind us. Luckily, we have
-          over a hundred years of cinema to fall back on.
+          Music is everywhere, yet sometimes it feels like there's nothing
+          to listen to. This gallery helps you explore and discover songs.
         </p>
         <br />
         <p>
-          This gallery features a collection of the 50,000 most <i>popular*</i>{' '}
-          movies according to <Link href={config.tmdbUrl}>TMDB</Link>, with data
-          current as of early 2025. The movies are sorted by popularity in
-          descending order, starting from the center of the grid and moving
-          outward.
-        </p>
-        <br />
-        <p>
-          <small>
-            <i>*Not to be confused with the highest rated movies</i>
-          </small>
+          This gallery features a collection of popular songs sourced from{' '}
+          <Link href='https://www.last.fm'>Last.fm</Link>, with data including
+          play counts, listener numbers, and genre information. The songs are
+          sorted by popularity in descending order, starting from the center
+          of the grid and moving outward.
         </p>
       </>
     ),
@@ -218,7 +207,7 @@ const items = [
     content: (
       <>
         <p>
-          The film posters are packed into image montages, also known as texture
+          The song posters are packed into image montages, also known as texture
           atlases. These montages are served on demand as compressed textures,
           with multiple quality levels available. The lowest quality level
           delivers images as small as 4×6 pixels.
