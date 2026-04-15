@@ -61,9 +61,9 @@ const createMockState = (overrides: Partial<StoreState> = {}): StoreState => ({
   },
   setPerformanceMonitor: () => {},
 
-  // FilmData Slice defaults
-  setFilm: () => {},
-  filmBatches: new Map(),
+  // SongData Slice defaults
+  setSong: () => {},
+  songBatches: new Map(),
 
   // Apply overrides
   ...overrides,

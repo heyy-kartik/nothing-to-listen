@@ -1,6 +1,6 @@
 import { About } from './about'
 import { Favorites } from './favorites'
-import { FilmPreview, FilmViewDrawer } from './film'
+import { SongPreview, SongViewDrawer } from './song'
 import { HotkeysView } from './hotkeys'
 import { LowFpsAlert } from './low-fps-alert'
 import { Settings } from './settings'
@@ -10,8 +10,8 @@ const PrimaryViews = () => (
     <Settings />
     <About />
     <Favorites />
-    <FilmPreview />
-    <FilmViewDrawer />
+    <SongPreview />
+    <SongViewDrawer />
     <LowFpsAlert />
     <HotkeysView />
   </>

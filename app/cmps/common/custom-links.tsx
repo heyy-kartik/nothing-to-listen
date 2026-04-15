@@ -1,29 +1,29 @@
-import { Copy, X } from 'lucide-react'
-import { useState } from 'react'
-import slugify from 'slugify'
-import { useShallowState } from '../../store'
-import { cn } from '../../utils/tw'
-import type { Film } from '../../vf'
-import { Button } from '../ui/button'
+import { Copy, X } from "lucide-react";
+import { useState } from "react";
+import slugify from "slugify";
+import { useShallowState } from "../../store";
+import { cn } from "../../utils/tw";
+import type { Song } from "../../vf";
+import { Button } from "../ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip'
+} from "../ui/tooltip";
 
 export const CustomLinks = ({
-  film,
-  buttonClassName = '',
+  song,
+  buttonClassName = "",
 }: {
-  film: {
-    title: Film['title']
-    tmdbId: Film['tmdbId']
-    imdbId?: Film['imdbId']
-  }
-  className?: string
-  buttonClassName?: string
-  addNewDisabled?: boolean
+  song: {
+    title: Song["title"];
+    id: Song["id"];
+    id?: Song["id"];
+  };
+  className?: string;
+  buttonClassName?: string;
+  addNewDisabled?: boolean;
 }) => {
   const { userConfig, setUserConfig, customLinks } = useShallowState(
     (state) => ({
@@ -31,9 +31,9 @@ export const CustomLinks = ({
       setUserConfig: state.setUserConfig,
       customLinks: state.userConfig.customLinks,
     }),
-  )
+  );
 
-  const [copiedCustomLink, setCopiedCustomLink] = useState(false)
+  const [copiedCustomLink, setCopiedCustomLink] = useState(false);
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -41,17 +41,17 @@ export const CustomLinks = ({
         <Button
           asChild
           key={baseUrl}
-          variant='outline'
+          variant="outline"
           className={cn(
-            'rounded-lg border-foreground md:backdrop-blur-lg',
+            "rounded-lg border-foreground md:backdrop-blur-lg",
             buttonClassName,
           )}
         >
-          <div className='group relative'>
+          <div className="group relative">
             <a
-              href={`${baseUrl}${(slug ? (v: string) => slugify(v).toLowerCase() : (v: string) => v)(String(film[property]))}`}
-              target='_blank'
-              rel='noreferrer noopener'
+              href={`${baseUrl}${(slug ? (v: string) => slugify(v).toLowerCase() : (v: string) => v)(String(song[property]))}`}
+              target="_blank"
+              rel="noreferrer noopener"
             >
               {name}
             </a>
@@ -59,12 +59,12 @@ export const CustomLinks = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  size='icon'
-                  variant='unstyled'
-                  className='-bottom-2 -end-2 absolute inline-flex size-5 items-center justify-center rounded-full border border-white bg-blue-500 font-bold text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100'
+                  size="icon"
+                  variant="unstyled"
+                  className="-bottom-2 -end-2 absolute inline-flex size-5 items-center justify-center rounded-full border border-white bg-blue-500 font-bold text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   onClick={() => {
                     void navigator?.clipboard?.writeText(
-                      `${window.location.href.split('?')[0]}?customLinkBase64=${window.btoa(
+                      `${window.location.href.split("?")[0]}?customLinkBase64=${window.btoa(
                         JSON.stringify({
                           name,
                           baseUrl,
@@ -72,19 +72,19 @@ export const CustomLinks = ({
                           property,
                         }),
                       )}`,
-                    )
-                    setCopiedCustomLink(true)
-                    setTimeout(() => setCopiedCustomLink(false), 2000)
+                    );
+                    setCopiedCustomLink(true);
+                    setTimeout(() => setCopiedCustomLink(false), 2000);
                   }}
                 >
-                  <Copy className='!size-3' />
+                  <Copy className="!size-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent
                 onPointerDownOutside={(event) => {
-                  event.preventDefault()
+                  event.preventDefault();
                 }}
-                side='bottom'
+                side="bottom"
               >
                 {copiedCustomLink ? (
                   <p>Copied!</p>
@@ -97,16 +97,18 @@ export const CustomLinks = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  size='icon'
-                  variant='unstyled'
-                  className='-top-2 -end-2 absolute inline-flex size-5 items-center justify-center rounded-full border border-white bg-red-500 font-bold text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100 '
+                  size="icon"
+                  variant="unstyled"
+                  className="-top-2 -end-2 absolute inline-flex size-5 items-center justify-center rounded-full border border-white bg-red-500 font-bold text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100 "
                   onClick={() => {
-                    userConfig.customLinks?.splice(index, 1)
-                    userConfig.customLinks = [...(userConfig.customLinks ?? [])]
-                    setUserConfig(userConfig)
+                    userConfig.customLinks?.splice(index, 1);
+                    userConfig.customLinks = [
+                      ...(userConfig.customLinks ?? []),
+                    ];
+                    setUserConfig(userConfig);
                   }}
                 >
-                  <X className='!size-3' />
+                  <X className="!size-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -117,5 +119,5 @@ export const CustomLinks = ({
         </Button>
       ))}
     </TooltipProvider>
-  )
-}
+  );
+};

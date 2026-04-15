@@ -6,27 +6,33 @@ type RatingGaugeProps = React.ComponentProps<'svg'> & {
   className?: string
 }
 
-function clamp(input: number, a: number, b: number): number {
-  return Math.max(Math.min(input, Math.max(a, b)), Math.min(a, b))
+function formatPlaycount(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1)}M`
+  }
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(0)}K`
+  }
+  return String(value)
 }
 
 // match values with lucide icons for compatibility
 const size = 24
 const strokeWidth = 2
 
-// fix to percentage values
-const total = 100
+// playcount gauge: normalize against a max benchmark (e.g. 60M plays)
+const maxPlaycount = 60_000_000
 
 export const SongRatingGauge = ({
   value,
   className,
   ...restSvgProps
 }: RatingGaugeProps) => {
-  const normalizedValue = clamp(!Number.isNaN(value) ? value : 0, 0, total)
+  const normalizedValue = Math.min((value / maxPlaycount) * 100, 100)
 
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
-  const progress = (normalizedValue / total) * circumference
+  const progress = (normalizedValue / 100) * circumference
   const halfSize = size / 2
 
   const circleProps = {
@@ -63,9 +69,8 @@ export const SongRatingGauge = ({
           className='stroke-current'
         />
       </svg>
-      <div className='-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 leading-none'>
-        {Math.round(value)}
-        <span className='text-[0.5rem]'>%</span>
+      <div className='-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 leading-none text-center'>
+        <span className='text-[0.55rem] md:text-[0.7rem]'>{formatPlaycount(value)}</span>
       </div>
     </div>
   )

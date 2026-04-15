@@ -99,8 +99,8 @@ export const Intro = () => {
 
 const MoviesDatasetLicenseInfo = () => (
   <span className="inline-flex text-xxs text-zinc-600 leading-none dark:text-zinc-300">
-    Contains information from Kaggle's "Full TMDB Movies Dataset" which is made
-    available under the ODC Attribution License.
+    Contains song data sourced from Last.fm. All rights to the
+    materials used remain with their respective owners.
   </span>
 );
 

@@ -1,4 +1,4 @@
-import type voroforce from '√'
+import type voroforce from '../../../voroforce'
 import type { SharedCell } from '√/common/data'
 
 export type VoroforceCell = SharedCell

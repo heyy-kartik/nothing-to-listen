@@ -2,7 +2,7 @@ const mediaConfig = {
   enabled: true,
   baseUrl: import.meta.env.VITE_TEXTURES_BASE_URL ?? '/media',
   preload: 'first', // 'v0', 'first' or false
-  compressionFormat: 'dds', // or 'ktx'
+  compressionFormat: 'jpg', // standard JPEG — files in /media/v0, v1, v2 are .jpg
   versions: [
     {
       cols: 512,
@@ -10,8 +10,8 @@ const mediaConfig = {
       width: 2048,
       height: 624,
       layers: Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_0_LAYERS) ?? 1,
-      layerSrcFormat: '/low/{EXT}/{INDEX}.{EXT}',
-      type: 'compressed-grid',
+      layerSrcFormat: '/v0/{INDEX}.jpg',
+      type: 'uncompressed-grid',
     },
     {
       cols: 90,
@@ -20,8 +20,8 @@ const mediaConfig = {
       height: 1980,
       layers:
         Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_1_LAYERS) ?? 10,
-      layerSrcFormat: '/mid/{EXT}/{INDEX}.{EXT}',
-      type: 'compressed-grid',
+      layerSrcFormat: '/v1/{INDEX}.jpg',
+      type: 'uncompressed-grid',
     },
     {
       cols: 18,
@@ -30,8 +30,8 @@ const mediaConfig = {
       height: 1980,
       layers:
         Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_2_LAYERS) ?? 241,
-      layerSrcFormat: '/high/{EXT}/{INDEX}.{EXT}',
-      type: 'compressed-grid',
+      layerSrcFormat: '/v2/{INDEX}.jpg',
+      type: 'uncompressed-grid',
     },
   ],
 }

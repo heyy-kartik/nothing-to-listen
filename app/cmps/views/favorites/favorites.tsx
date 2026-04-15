@@ -6,7 +6,7 @@ import { Modal } from '../../common/modal'
 import { StdLinks } from '../../common/standard-links'
 import { Button } from '../../ui/button'
 import { ScrollArea } from '../../ui/scroll-area'
-import { FilmPoster } from '../film/shared/film-poster'
+import { SongPoster } from '../song/shared/song-poster'
 
 const CustomLinks = lazy(() =>
   import('../../common/custom-links').then((module) => ({
@@ -69,34 +69,36 @@ export const Favorites = () => {
         <div className='flex min-h-64 w-full flex-col gap-4 p-4 pb-18 md:gap-6 md:p-6 md:pb-24 lg:flex lg:pt-16 lg:pb-24'>
           {userConfig.favorites ? (
             <>
-              {Object.entries(userConfig.favorites).map(([key, film]) => (
+              {Object.entries(userConfig.favorites).map(([key, song]) => (
                 <div
                   className='relative flex h-36 w-full cursor-auto flex-row overflow-hidden rounded-xl border'
                   key={key}
                 >
-                  <FilmPoster film={film} />
+                  <SongPoster song={song} />
                   <div className='flex h-full grow flex-col justify-between gap-3 p-4'>
                     <h6 className='pr-3 font-black text-2xl leading-none'>
-                      {film.title}
-                      <span className='font-normal text-foreground/50'>
-                        &nbsp;({film.year})
-                      </span>
+                      {song.title}
                     </h6>
                     <p className='line-clamp-1 hidden font-medium text-base text-foreground/90 leading-none md:inline-block'>
-                      {film.tagline}
+                      {song.artist}
                     </p>
+                    {song.album && (
+                      <p className='line-clamp-1 hidden text-sm text-foreground/60 leading-none md:inline-block'>
+                        {song.album}
+                      </p>
+                    )}
                     <div
                       className={cn(
                         'pointer-events-auto flex flex-row flex-wrap gap-1.5',
                       )}
                     >
                       <StdLinks
-                        film={film}
+                        song={song}
                         buttonClassName='text-xxs !py-1 !px-2 !h-auto'
                       />
                       {hasCustomLinks && (
                         <CustomLinks
-                          film={film}
+                          song={song}
                           addNewDisabled
                           buttonClassName='!py-1 !px-2 !h-auto'
                         />
@@ -104,12 +106,12 @@ export const Favorites = () => {
                     </div>
                   </div>
                   <div className='absolute top-4 right-4 flex flex-row gap-2'>
-                    {film.cellId && voroforceControls && (
+                    {song.cellId && voroforceControls && (
                       <Button
                         size='icon'
                         className='!size-6 [&_svg]:!size-4 cursor-pointer rounded-full'
                         onClick={() => {
-                          voroforceControls.navigateToCellById(film.cellId)
+                          voroforceControls.navigateToCellById(song.cellId)
                         }}
                       >
                         <MapPin />

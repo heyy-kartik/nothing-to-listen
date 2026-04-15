@@ -8,19 +8,25 @@ export class Song {
   id: number
   title: string
   artist: string
+  album: string
+  genre: string
+  listeners: number
+  playcount: number
+  mbid: string
+  url: string
   imageUrl: string
-  playcount?: number
-  listeners?: number
-  duration?: number
 
   constructor(data: SongData) {
     this.id = Number(data.id || data.rank)
-    this.title = String(data.name || data.title)
+    this.title = String(data.name || data.title || '')
     this.artist = String((data.artist as any)?.name || data.artist || '')
+    this.album = String(data.album || '')
+    this.genre = String(data.genre || '')
+    this.listeners = data.listeners ? Number(data.listeners) : 0
+    this.playcount = data.playcount ? Number(data.playcount) : 0
+    this.mbid = String(data.mbid || '')
+    this.url = String(data.url || '')
     this.imageUrl = String(data.imageUrl || '')
-    this.playcount = data.playcount ? Number(data.playcount) : undefined
-    this.listeners = data.listeners ? Number(data.listeners) : undefined
-    this.duration = data.duration ? Number(data.duration) : undefined
   }
 }
 
