@@ -47,6 +47,11 @@ export class CompressedMediaGridArrayTexture extends Texture {
     this.compressedTexExt = ext
     this.internalFormat = internalFormat
     this.isStandardImage = isStandardImage
+    this.cols = args.cols ?? 1
+    this.rows = args.rows ?? 1
+    this.layerCapacity = this.cols * this.rows
+    this.tileWidth = Math.max(1, Math.floor(this.width / this.cols))
+    this.tileHeight = Math.max(1, Math.floor(this.height / this.rows))
 
     this.bind()
 
@@ -70,6 +75,16 @@ export class CompressedMediaGridArrayTexture extends Texture {
   }
 
   pendingLayerUpdates = []
+
+  static resizeImageSource(image, width, height) {
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return image
+    ctx.drawImage(image, 0, 0, width, height)
+    return canvas
+  }
 
   update(textureUnit = 0) {
     // Make sure that texture is bound to its texture unit
@@ -149,19 +164,63 @@ export class CompressedMediaGridArrayTexture extends Texture {
 
     this.pendingLayerUpdates.forEach(({ index, bytes }) => {
       if (this.isStandardImage) {
+        const sourceWidth = bytes?.naturalWidth ?? bytes?.videoWidth ?? bytes?.width
+        const sourceHeight =
+          bytes?.naturalHeight ?? bytes?.videoHeight ?? bytes?.height
+
+        let xOffset = 0
+        let yOffset = 0
+        let layerIndex = index
+        let uploadWidth = this.width
+        let uploadHeight = this.height
+        let uploadBytes = bytes
+
+        const shouldPackAsTile =
+          Number.isFinite(sourceWidth) &&
+          Number.isFinite(sourceHeight) &&
+          (sourceWidth !== this.width || sourceHeight !== this.height) &&
+          this.layerCapacity > 0
+
+        if (shouldPackAsTile) {
+          const tileIndex = index % this.layerCapacity
+          const tileRow = Math.floor(tileIndex / this.cols)
+          const tileCol = tileIndex % this.cols
+          layerIndex = Math.floor(index / this.layerCapacity)
+          xOffset = tileCol * this.tileWidth
+          yOffset = tileRow * this.tileHeight
+          uploadWidth = this.tileWidth
+          uploadHeight = this.tileHeight
+        }
+
+        if (layerIndex < 0 || layerIndex >= this.length) {
+          return
+        }
+
+        if (
+          Number.isFinite(sourceWidth) &&
+          Number.isFinite(sourceHeight) &&
+          (sourceWidth !== uploadWidth || sourceHeight !== uploadHeight)
+        ) {
+          uploadBytes = CompressedMediaGridArrayTexture.resizeImageSource(
+            bytes,
+            uploadWidth,
+            uploadHeight,
+          )
+        }
+
         // Standard image: bytes is an Image/HTMLImageElement
         this.gl.texSubImage3D(
           this.gl.TEXTURE_2D_ARRAY,
           0,
-          0,
-          0,
-          index,
-          this.width,
-          this.height,
+          xOffset,
+          yOffset,
+          layerIndex,
+          uploadWidth,
+          uploadHeight,
           1,
           this.gl.RGBA,
           this.gl.UNSIGNED_BYTE,
-          bytes,
+          uploadBytes,
         )
       } else {
         // Compressed format: bytes is a Uint8Array
@@ -190,4 +249,3 @@ export class CompressedMediaGridArrayTexture extends Texture {
     })
   }
 }
-

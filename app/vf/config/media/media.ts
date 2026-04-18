@@ -1,3 +1,8 @@
+const parseLayerCount = (value: string | undefined, fallback: number) => {
+  const parsed = Number.parseInt(value ?? '', 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
 const mediaConfig = {
   enabled: true,
   baseUrl: import.meta.env.VITE_TEXTURES_BASE_URL ?? '/media',
@@ -9,29 +14,30 @@ const mediaConfig = {
       rows: 104,
       width: 2048,
       height: 624,
-      layers: Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_0_LAYERS) ?? 1,
+      layers: parseLayerCount(import.meta.env.VITE_MEDIA_VERSION_0_LAYERS, 1),
       layerSrcFormat: '/v0/{INDEX}.jpg',
       type: 'uncompressed-grid',
+      sourceLayout: 'tiles',
     },
     {
       cols: 90,
       rows: 60,
       width: 1980,
       height: 1980,
-      layers:
-        Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_1_LAYERS) ?? 10,
+      layers: parseLayerCount(import.meta.env.VITE_MEDIA_VERSION_1_LAYERS, 10),
       layerSrcFormat: '/v1/{INDEX}.jpg',
       type: 'uncompressed-grid',
+      sourceLayout: 'tiles',
     },
     {
       cols: 18,
       rows: 12,
       width: 1980,
       height: 1980,
-      layers:
-        Number.parseInt(import.meta.env.VITE_MEDIA_VERSION_2_LAYERS) ?? 241,
+      layers: parseLayerCount(import.meta.env.VITE_MEDIA_VERSION_2_LAYERS, 241),
       layerSrcFormat: '/v2/{INDEX}.jpg',
       type: 'uncompressed-grid',
+      sourceLayout: 'tiles',
     },
   ],
 }

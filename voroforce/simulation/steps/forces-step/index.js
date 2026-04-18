@@ -158,28 +158,29 @@ export default class ForcesSimulationStep extends BaseSimulationStep {
   handleCellTargetMediaVersion(cell) {
     if (!this.mediaConfig.enabled) return
 
-    if (cell.targetMediaVersion !== cell.mediaVersion) {
-      const mediaVersion = this.mediaConfig.versions[cell.targetMediaVersion]
+    const mediaVersion = this.mediaConfig.versions[cell.targetMediaVersion]
+    const mediaCapacity = mediaVersion.cols * mediaVersion.rows
+    const totalCapacity = mediaCapacity * mediaVersion.layers
+    const isTileSourceLayout = mediaVersion.sourceLayout === 'tiles'
+    const loadUnitIndex = isTileSourceLayout
+      ? cell.id % totalCapacity
+      : Math.floor((cell.id / mediaCapacity) % mediaVersion.layers)
 
-      const layerIndex = Math.floor(
-        (cell.id / (mediaVersion.cols * mediaVersion.rows)) %
-          mediaVersion.layers,
-      )
-
-      switch (
-        this.sharedLoadedMediaVersionLayersData[cell.targetMediaVersion].data[
-          layerIndex
-        ]
-      ) {
-        case 0:
-          this.mediaVersionLayerLoadRequests[cell.targetMediaVersion].add(
-            layerIndex,
-          )
-          break
-        case 2:
+    switch (
+      this.sharedLoadedMediaVersionLayersData[cell.targetMediaVersion].data[
+        loadUnitIndex
+      ]
+    ) {
+      case 0:
+        this.mediaVersionLayerLoadRequests[cell.targetMediaVersion].add(
+          loadUnitIndex,
+        )
+        break
+      case 2:
+        if (cell.targetMediaVersion !== cell.mediaVersion) {
           cell.mediaVersion = cell.targetMediaVersion
-          break
-      }
+        }
+        break
     }
   }
 
