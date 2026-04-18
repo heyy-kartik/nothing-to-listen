@@ -138,6 +138,9 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
       texture-compressor:
         specifier: ^1.0.2
         version: 1.0.2
