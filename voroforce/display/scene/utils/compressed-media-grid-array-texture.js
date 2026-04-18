@@ -76,12 +76,27 @@ export class CompressedMediaGridArrayTexture extends Texture {
 
   pendingLayerUpdates = []
 
+  static getImageDimensions(bytes) {
+    const width = bytes?.naturalWidth ?? bytes?.videoWidth ?? bytes?.width ?? 0
+    const height =
+      bytes?.naturalHeight ?? bytes?.videoHeight ?? bytes?.height ?? 0
+    return {
+      width,
+      height,
+    }
+  }
+
   static resizeImageSource(image, width, height) {
     const canvas = document.createElement('canvas')
     canvas.width = width
     canvas.height = height
     const ctx = canvas.getContext('2d')
-    if (!ctx) return image
+    if (!ctx) {
+      console.warn(
+        '[CompressedMediaGridArrayTexture] Failed to get 2D canvas context while resizing media source; using original source dimensions as fallback',
+      )
+      return image
+    }
     ctx.drawImage(image, 0, 0, width, height)
     return canvas
   }
@@ -164,9 +179,8 @@ export class CompressedMediaGridArrayTexture extends Texture {
 
     this.pendingLayerUpdates.forEach(({ index, bytes }) => {
       if (this.isStandardImage) {
-        const sourceWidth = bytes?.naturalWidth ?? bytes?.videoWidth ?? bytes?.width
-        const sourceHeight =
-          bytes?.naturalHeight ?? bytes?.videoHeight ?? bytes?.height
+        const { width: sourceWidth, height: sourceHeight } =
+          CompressedMediaGridArrayTexture.getImageDimensions(bytes)
 
         let xOffset = 0
         let yOffset = 0
@@ -182,6 +196,8 @@ export class CompressedMediaGridArrayTexture extends Texture {
           this.layerCapacity > 0
 
         if (shouldPackAsTile) {
+          // `index` is treated as a global tile id for tile-source media:
+          // decompose it into destination layer + tile position inside the layer atlas.
           const tileIndex = index % this.layerCapacity
           const tileRow = Math.floor(tileIndex / this.cols)
           const tileCol = tileIndex % this.cols

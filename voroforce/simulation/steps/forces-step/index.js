@@ -159,12 +159,29 @@ export default class ForcesSimulationStep extends BaseSimulationStep {
     if (!this.mediaConfig.enabled) return
 
     const mediaVersion = this.mediaConfig.versions[cell.targetMediaVersion]
-    const mediaCapacity = mediaVersion.cols * mediaVersion.rows
-    const totalCapacity = mediaCapacity * mediaVersion.layers
+    if (!mediaVersion) return
+
+    const mediaCols = Number(mediaVersion.cols)
+    const mediaRows = Number(mediaVersion.rows)
+    const mediaLayers = Number(mediaVersion.layers)
+    if (
+      !Number.isFinite(mediaCols) ||
+      !Number.isFinite(mediaRows) ||
+      !Number.isFinite(mediaLayers) ||
+      mediaCols <= 0 ||
+      mediaRows <= 0 ||
+      mediaLayers <= 0
+    )
+      return
+
+    const mediaCapacity = mediaCols * mediaRows
+    const totalCapacity = mediaCapacity * mediaLayers
     const isTileSourceLayout = mediaVersion.sourceLayout === 'tiles'
+    // Tile-source layout tracks each tile/file by global media id,
+    // while layer-source layout tracks only packed layer indices.
     const loadUnitIndex = isTileSourceLayout
       ? cell.id % totalCapacity
-      : Math.floor((cell.id / mediaCapacity) % mediaVersion.layers)
+      : Math.floor((cell.id / mediaCapacity) % mediaLayers)
 
     switch (
       this.sharedLoadedMediaVersionLayersData[cell.targetMediaVersion].data[
