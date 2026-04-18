@@ -20,7 +20,11 @@ export class Loader extends CustomEventTarget {
   }
 
   preloadAllMediaLayersVersion0(onLoad) {
-    const count = this.config.versions[0].layers
+    const versionConfig = this.config.versions[0] ?? {}
+    const count =
+      versionConfig.sourceLayout === 'tiles'
+        ? 1
+        : Math.max(1, versionConfig.layers ?? 1)
     let loaded = 0
     const onLoadLayer = () => {
       loaded++
