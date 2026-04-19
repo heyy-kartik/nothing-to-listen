@@ -14,6 +14,7 @@ export class Song {
   playcount: number
   mbid: string
   url: string
+  
   imageUrl: string
 
   constructor(data: SongData) {
