@@ -158,28 +158,46 @@ export default class ForcesSimulationStep extends BaseSimulationStep {
   handleCellTargetMediaVersion(cell) {
     if (!this.mediaConfig.enabled) return
 
-    if (cell.targetMediaVersion !== cell.mediaVersion) {
-      const mediaVersion = this.mediaConfig.versions[cell.targetMediaVersion]
+    const mediaVersion = this.mediaConfig.versions[cell.targetMediaVersion]
+    if (!mediaVersion) return
 
-      const layerIndex = Math.floor(
-        (cell.id / (mediaVersion.cols * mediaVersion.rows)) %
-          mediaVersion.layers,
-      )
+    const mediaCols = Number(mediaVersion.cols)
+    const mediaRows = Number(mediaVersion.rows)
+    const mediaLayers = Number(mediaVersion.layers)
+    if (
+      !Number.isFinite(mediaCols) ||
+      !Number.isFinite(mediaRows) ||
+      !Number.isFinite(mediaLayers) ||
+      mediaCols <= 0 ||
+      mediaRows <= 0 ||
+      mediaLayers <= 0
+    )
+      return
 
-      switch (
-        this.sharedLoadedMediaVersionLayersData[cell.targetMediaVersion].data[
-          layerIndex
-        ]
-      ) {
-        case 0:
-          this.mediaVersionLayerLoadRequests[cell.targetMediaVersion].add(
-            layerIndex,
-          )
-          break
-        case 2:
+    const mediaCapacity = mediaCols * mediaRows
+    const totalCapacity = mediaCapacity * mediaLayers
+    const isTileSourceLayout = mediaVersion.sourceLayout === 'tiles'
+    // Tile-source layout tracks each tile/file by global media id,
+    // while layer-source layout tracks only packed layer indices.
+    const loadUnitIndex = isTileSourceLayout
+      ? cell.id % totalCapacity
+      : Math.floor((cell.id / mediaCapacity) % mediaLayers)
+
+    switch (
+      this.sharedLoadedMediaVersionLayersData[cell.targetMediaVersion].data[
+        loadUnitIndex
+      ]
+    ) {
+      case 0:
+        this.mediaVersionLayerLoadRequests[cell.targetMediaVersion].add(
+          loadUnitIndex,
+        )
+        break
+      case 2:
+        if (cell.targetMediaVersion !== cell.mediaVersion) {
           cell.mediaVersion = cell.targetMediaVersion
-          break
-      }
+        }
+        break
     }
   }
 

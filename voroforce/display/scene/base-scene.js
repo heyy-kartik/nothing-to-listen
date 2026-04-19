@@ -317,11 +317,13 @@ export default class BaseScene {
     this.compressedMediaGridTextures = this.getCompressedMediaVersions().map(
       (mediaVersion) => {
         if (!mediaVersion) return new Texture(this.gl, {})
-        const { width, height, layers } = mediaVersion
+        const { width, height, layers, cols, rows } = mediaVersion
         return new CompressedMediaGridArrayTexture(this.gl, {
           width,
           height,
           length: layers,
+          cols,
+          rows,
           compressionFormat: this.globalConfig.media.compressionFormat,
         })
       },
