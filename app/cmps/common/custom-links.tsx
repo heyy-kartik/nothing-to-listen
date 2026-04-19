@@ -19,7 +19,6 @@ export const CustomLinks = ({
   song: {
     title: Song["title"];
     id: Song["id"];
-    id?: Song["id"];
   };
   className?: string;
   buttonClassName?: string;
@@ -49,7 +48,7 @@ export const CustomLinks = ({
         >
           <div className="group relative">
             <a
-              href={`${baseUrl}${(slug ? (v: string) => slugify(v).toLowerCase() : (v: string) => v)(String(song[property]))}`}
+              href={`${baseUrl}${(slug ? (v: string) => slugify(v).toLowerCase() : (v: string) => v)(String((song as Record<string, any>)[property]))}`}
               target="_blank"
               rel="noreferrer noopener"
             >
