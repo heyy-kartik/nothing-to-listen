@@ -1,5 +1,7 @@
-import type voroforce from '../../../voroforce'
+// import type voroforce from '../../../voroforce'
+
 import type { SharedCell } from '√/common/data'
+import voroforce from '√/voroforce'
 
 export type VoroforceCell = SharedCell
 export type VoroforceCells = VoroforceCell[] & {
